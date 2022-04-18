@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\team3-net",
+    "\\team3-net\\Share"
   ],
+  "SelectedNode": "\\team3-net\\Share\\Share.csproj",
   "PreviewInSolutionExplorer": false
 }
