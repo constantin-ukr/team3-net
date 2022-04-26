@@ -33,7 +33,7 @@ namespace CommentsService.Controllers
             var item = items.Where(item => item.id == id).SingleOrDefault();
             if (item == null)
             {
-                return NotFound();
+                return item;
             }
             return item;
         }

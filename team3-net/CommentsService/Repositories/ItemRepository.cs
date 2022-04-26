@@ -1,8 +1,9 @@
 ﻿using CommentsService.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CommentsService.Repositories
 {
-    public class ItemRepository<EntityType> : IRepository<EntityType> where EntityType : BaseEntity
+    public class ItemRepository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly CommentsDbContext _context;
         public ItemRepository(CommentsDbContext context)
@@ -18,30 +19,35 @@ namespace CommentsService.Repositories
             //}
         }
 
-        public Task CreateAsync(EntityType item)
+        public async Task CreateAsync(T item)
         {
-            throw new NotImplementedException();
+            await _context.Set<T>().AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(id)
+        public async Task DeleteAsync(Guid id)
         {
-            var item = await _context.FindAsync(id);
-            _context.Remove(item);
+            var result = await _context.Set<T>().FirstOrDefaultAsync(e => e.Id == id);
+
+            _context.Set<T>().Remove(result);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<EntityType>> GetAllItemsAsync()
+        public async Task<IEnumerable<T>> GetAllItemsAsync()
         {
-            return await GetAllItemsAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
-        public Task<EntityType> GetItemByIdAsync(Guid id)
+        public async Task<T> GetItemByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Set<T>().FindAsync(id);
+
         }
 
-        public Task UpdateAsync(EntityType item)
+        public async Task UpdateAsync(T item)
         {
-            throw new NotImplementedException();
+            _context.Entry(item).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }
