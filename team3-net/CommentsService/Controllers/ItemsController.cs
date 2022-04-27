@@ -11,18 +11,14 @@ namespace CommentsService.Controllers
     [Route("items")]
     public class ItemsController : ControllerBase
     {
-        //DataBase here
+        private readonly IItemRepository itemsRepository;
 
-        private readonly ItemRepository<Item> itemsRepository = new();
+        public ItemsController(IItemRepository itemsRepository)
+        {
+            this.itemsRepository = itemsRepository;
+        }
 
-
-        //private static readonly List<ItemDto> items = new()
-        //{
-        //    new ItemDto(Guid.NewGuid(), "God of War", "Kratos and son are finally making their way to PC in a port of the much-loved action hack-and-slash.", DateTime.UtcNow),
-        //    new ItemDto(Guid.NewGuid(), "Dying Light 2", "The sequel to Techland's zombies and parkour action game is finally arriving in 2022 after multiple delays.", DateTime.UtcNow),
-        //    new ItemDto(Guid.NewGuid(), "Total War: Warhammer 3", "This is the final game in Creative Assembly's trilogy, bringing the last of the tabletop wargame's armies into digital form.", DateTime.UtcNow),
-        //};
-
+        //GET /items
         [HttpGet]
         public async Task<IEnumerable<ItemDto>> GetAsync()
         {
@@ -45,7 +41,7 @@ namespace CommentsService.Controllers
             }
             return item.AsDto();
         }
-        // POST /items/
+        //POST /items/
         [HttpPost]
         public async Task<ActionResult<ItemDto>> PostAsync(CreateItemDto createItemDto)
         {
@@ -59,7 +55,7 @@ namespace CommentsService.Controllers
             return CreatedAtAction(nameof(GetByIdAsync), new { id = item.Id }, item);
         }
 
-        // PUT /items/{id}
+        //PUT /items/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(Guid id, UpdateItemDto updateItemDto)
         {

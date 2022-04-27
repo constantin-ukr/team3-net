@@ -3,48 +3,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommentsService.Repositories
 {
-    public class ItemRepository<T> : IRepository<T> where T : BaseEntity
+    public class ItemRepository : IItemRepository
     {
         private readonly CommentsDbContext _context;
+
         public ItemRepository(CommentsDbContext context)
         {
             _context = context;
-            //if (!context.Comment.Any())
-            //{
-            //    context.Comment.Add(new Item { Name = "First Comment", Description = "Some description", CreatedDate = DateTime.UtcNow });
-            //    context.Comment.Add(new Item { Name = "Second Comment", Description = "Some description", CreatedDate = DateTime.UtcNow });
-
-
-            //    context.SaveChanges();
-            //}
         }
 
-        public async Task CreateAsync(T item)
+        public async Task CreateAsync(Item item)
         {
-            await _context.Set<T>().AddAsync(item);
+            await _context.AddAsync(item);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var result = await _context.Set<T>().FirstOrDefaultAsync(e => e.Id == id);
+            var item = await _context.Items.FindAsync(id);
 
-            _context.Set<T>().Remove(result);
+            _context.Items.Remove(item);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllItemsAsync()
+        public async Task<IEnumerable<Item>> GetAllItemsAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Items.ToListAsync();
         }
 
-        public async Task<T> GetItemByIdAsync(Guid id)
+        public async Task<Item> GetItemByIdAsync(Guid id)
         {
-            return await _context.Set<T>().FindAsync(id);
-
+            return await _context.Items.FindAsync(id);
         }
 
-        public async Task UpdateAsync(T item)
+        public async Task UpdateAsync(Item item)
         {
             _context.Entry(item).State = EntityState.Modified;
             await _context.SaveChangesAsync();
