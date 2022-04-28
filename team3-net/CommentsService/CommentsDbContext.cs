@@ -8,7 +8,7 @@ namespace CommentsService
         public CommentsDbContext(DbContextOptions<CommentsDbContext> options) : base(options)
 
         {
-          //  Database.EnsureCreated();
+          Database.EnsureCreated();
         }
 
         public DbSet<Item> Items { get; set; }

@@ -48,7 +48,8 @@ namespace CommentsService.Controllers
             var item = new Item
             {
                 Name = createItemDto.name,
-                Description = createItemDto.description
+                Description = createItemDto.description,
+                CreatedDate = DateTime.UtcNow    
             };
 
             await itemsRepository.CreateAsync(item);
