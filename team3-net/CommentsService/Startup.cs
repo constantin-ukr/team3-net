@@ -10,7 +10,7 @@ namespace CommentsService
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }    
+        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -21,8 +21,10 @@ namespace CommentsService
           );
             services.AddSwaggerGen();
 
+
             services.AddDbContext<CommentsDbContext>(
-                    options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+                  options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+
             services.AddScoped<IItemRepository, ItemRepository>();
 
         }
