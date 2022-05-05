@@ -19,7 +19,7 @@ namespace BankSystemApi.Services
         {
             var creditcard = _unitOfWork.GetCreditCardRepository.GetAll().FirstOrDefault(x=>(x.Cvc==order.CreditCard.Cvc&&
             x.CardNumber==order.CreditCard.CardNumber&&x.DateOfExpire==order.CreditCard.DateOfExpire));
-            var user = _unitOfWork.GetCreditCardRepository.GetById(order.UserId);
+            var user = _unitOfWork.GetUserRepository.GetById(order.UserId);
             if (user == null || creditcard == null||creditcard.UserId!=user.Id)
             {
                 throw new ArgumentNullException("Incorect Data");

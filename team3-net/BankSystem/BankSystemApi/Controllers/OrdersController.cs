@@ -62,7 +62,6 @@ namespace BankSystemApi.Controllers
             }
         }
 
-        [Authorize]
         [HttpPost]
         public IActionResult Create([FromBody] Order order)
         {

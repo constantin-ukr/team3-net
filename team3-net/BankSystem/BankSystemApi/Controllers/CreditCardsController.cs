@@ -4,14 +4,11 @@ using BankSystemApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR.Redis;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -217,7 +214,6 @@ namespace BankSystemApi.Controllers
         /// <response code="200">You got balance of Credit Card</response>
         /// <response code="404">Any Credit Card was found</response>
         /// <response code="400">Something went wrong</response>
-        [Authorize]
         [HttpGet("/balance/{cardNumber}")]
         public IActionResult GetBalance(string cardNumber)
         {
