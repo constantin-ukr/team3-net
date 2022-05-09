@@ -11,9 +11,9 @@ namespace CommentsService.Controllers
     [Route("items")]
     public class ItemsController : ControllerBase
     {
-        private readonly IItemRepository itemsRepository;
+        private readonly IRepository<Item> itemsRepository;
 
-        public ItemsController(IItemRepository itemsRepository)
+        public ItemsController(IRepository<Item> itemsRepository)
         {
             this.itemsRepository = itemsRepository;
         }

@@ -20,7 +20,7 @@ namespace CommentsService
             modelBuilder.Entity<Item>().HasData(
                 new Item
                 {
-                    Id = Guid.NewGuid(), 
+                    Id = Guid.NewGuid(),
                     Name = "Electronics",
                     Description = "Electronic Items",
                 },

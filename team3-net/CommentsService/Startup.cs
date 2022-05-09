@@ -1,4 +1,5 @@
-﻿using CommentsService.Repositories;
+﻿using CommentsService.Entities;
+using CommentsService.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommentsService
@@ -25,7 +26,7 @@ namespace CommentsService
             services.AddDbContext<CommentsDbContext>(
                   options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
 
-            services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IRepository<Item>, Repository<Item>>();
 
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

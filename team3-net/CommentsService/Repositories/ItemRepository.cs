@@ -3,16 +3,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommentsService.Repositories
 {
-    public class ItemRepository : IItemRepository
+    public class Repository<T> : IRepository<T> where T:BaseEntity 
     {
         private readonly CommentsDbContext _context;
-
-        public ItemRepository(CommentsDbContext context)
+        private DbSet<T> _enteties;
+        public Repository(CommentsDbContext context)
         {
             _context = context;
+            _enteties = context.Set<T>();
         }
 
-        public async Task CreateAsync(Item item)
+        public async Task CreateAsync(T item)
         {
             await _context.AddAsync(item);
             await _context.SaveChangesAsync();
@@ -26,17 +27,17 @@ namespace CommentsService.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Item>> GetAllItemsAsync()
+        public async Task<IEnumerable<T>> GetAllItemsAsync()
         {
-            return await _context.Items.ToListAsync();
+            return await _enteties.ToListAsync();
         }
 
-        public async Task<Item> GetItemByIdAsync(Guid id)
+        public async Task<T> GetItemByIdAsync(Guid id)
         {
-            return await _context.Items.FindAsync(id);
+            return await _enteties.SingleOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task UpdateAsync(Item item)
+        public async Task UpdateAsync(T item)
         {
             _context.Entry(item).State = EntityState.Modified;
             await _context.SaveChangesAsync();
