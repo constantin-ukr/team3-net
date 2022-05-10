@@ -1,6 +1,6 @@
 ﻿namespace CommentsService.Entities
 {
-    public class Item:BaseEntity
+    public class Comment:BaseEntity
     {
      
         public string Name { get; set; }    

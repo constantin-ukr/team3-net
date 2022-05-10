@@ -5,9 +5,9 @@ namespace CommentsService
 {
     public static class Extensions
     {
-        public static ItemDto AsDto (this Item item)
+        public static CommentDto AsDto (this Comment comment)
         {
-            return new ItemDto(item.Id, item.Name, item.Description, item.CreatedDate);
+            return new CommentDto(comment.Id, comment.Name, comment.Description, comment.CreatedDate);
         }
     }
 }

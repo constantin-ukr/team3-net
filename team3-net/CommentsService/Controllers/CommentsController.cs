@@ -8,44 +8,44 @@ namespace CommentsService.Controllers
 {
 
     [ApiController]
-    [Route("items")]
-    public class ItemsController : ControllerBase
+    [Route("comments")]
+    public class CommentsController : ControllerBase
     {
-        private readonly IRepository<Item> itemsRepository;
+        private readonly IRepository<Comment> itemsRepository;
 
-        public ItemsController(IRepository<Item> itemsRepository)
+        public CommentsController(IRepository<Comment> itemsRepository)
         {
             this.itemsRepository = itemsRepository;
         }
 
         //GET /items
         [HttpGet]
-        public async Task<IEnumerable<ItemDto>> GetAsync()
+        public async Task<IEnumerable<CommentDto>> GetAsync()
         {
-            var items = (await itemsRepository.GetAllItemsAsync())
-                .Select(item => item.AsDto());
-            return items;
+            var comments = (await itemsRepository.GetAllItemsAsync())
+                .Select(c => c.AsDto());
+            return comments;
         }
 
 
         //GET /items/{id}
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<ItemDto>> GetByIdAsync(Guid id)
+        public async Task<ActionResult<CommentDto>> GetByIdAsync(Guid id)
         {
 
-            var item = await itemsRepository.GetItemByIdAsync(id);
-            if (item == null)
+            var comment = await itemsRepository.GetItemByIdAsync(id);
+            if (comment == null)
             {
                 return NotFound();
             }
-            return item.AsDto();
+            return comment.AsDto();
         }
         //POST /items/
         [HttpPost]
-        public async Task<ActionResult<ItemDto>> PostAsync(CreateItemDto createItemDto)
+        public async Task<ActionResult<CommentDto>> PostAsync(CreateCommentDto createItemDto)
         {
-            var item = new Item
+            var item = new Comment
             {
                 Name = createItemDto.name,
                 Description = createItemDto.description,
@@ -58,7 +58,7 @@ namespace CommentsService.Controllers
 
         //PUT /items/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync(Guid id, UpdateItemDto updateItemDto)
+        public async Task<IActionResult> PutAsync(Guid id, UpdateCommentDto updateItemDto)
         {
             var existingItem = await itemsRepository.GetItemByIdAsync(id);
 

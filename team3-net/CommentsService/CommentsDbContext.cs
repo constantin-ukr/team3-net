@@ -11,26 +11,26 @@ namespace CommentsService
          Database.EnsureCreated();
         }
 
-        public DbSet<Item> Items { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         //seed data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Item>().HasData(
-                new Item
+            modelBuilder.Entity<Comment>().HasData(
+                new Comment
                 {
                     Id = Guid.NewGuid(),
                     Name = "Electronics",
                     Description = "Electronic Items",
                 },
-                new Item
+                new Comment
                 {
                     Id = Guid.NewGuid(),
                     Name = "Clothes",
                     Description = "Dresses",
                 },
-                new Item
+                new Comment
                 {
                     Id = Guid.NewGuid(),
                     Name = "Grocery",

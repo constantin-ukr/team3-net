@@ -1,8 +1,8 @@
-﻿using CommentsService.Entities;
-using CommentsService.Repositories;
+﻿using GamesService.Entities;
+using GamesService.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace CommentsService
+namespace GamesService
 {
     public class Startup
     {
@@ -23,10 +23,10 @@ namespace CommentsService
             services.AddSwaggerGen();
 
 
-            services.AddDbContext<CommentsDbContext>(
+            services.AddDbContext<GamesDbContext>(
                   options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
 
-            services.AddScoped<IRepository<Comment>, Repository<Comment>>();
+            services.AddScoped<IRepository<Game>, Repository<Game>>();
 
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

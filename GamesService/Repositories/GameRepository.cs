@@ -1,29 +1,29 @@
-﻿using CommentsService.Entities;
+﻿using GamesService.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CommentsService.Repositories
+namespace GamesService.Repositories
 {
     public class Repository<T> : IRepository<T> where T:BaseEntity 
     {
-        private readonly CommentsDbContext _context;
+        private readonly GamesDbContext _context;
         private DbSet<T> _enteties;
-        public Repository(CommentsDbContext context)
+        public Repository(GamesDbContext context)
         {
             _context = context;
             _enteties = context.Set<T>();
         }
 
-        public async Task CreateAsync(T item)
+        public async Task CreateAsync(T comment)
         {
-            await _context.AddAsync(item);
+            await _context.AddAsync(comment);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var item = await _context.Items.FindAsync(id);
+            var comment = await _context.Games.FindAsync(id);
 
-            _context.Items.Remove(item);
+            _context.Games.Remove(comment);
             await _context.SaveChangesAsync();
         }
 
@@ -37,9 +37,9 @@ namespace CommentsService.Repositories
             return await _enteties.SingleOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task UpdateAsync(T item)
+        public async Task UpdateAsync(T comment)
         {
-            _context.Entry(item).State = EntityState.Modified;
+            _context.Entry(comment).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
     }
