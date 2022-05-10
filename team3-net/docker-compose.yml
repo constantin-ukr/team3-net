@@ -1,0 +1,33 @@
+version: '3.4'
+
+networks : 
+  localdev:
+    name: localdev
+
+services:
+  commentsservice:
+    image: ${DOCKER_REGISTRY-}commentsservice
+    container_name: commentsservice-conteiner
+    build:
+      context: .
+      dockerfile: CommentsService/Dockerfile
+    ports:
+        - "1433:80"
+    depends_on: 
+        - db-server
+    networks:
+        - localdev
+
+  db-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: db-server
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=yourStrong(!)Password
+      - MSSQL_TCP_PORT=1433
+    ports:
+      - 1433:1433
+    networks:
+      - localdev
+
+      
