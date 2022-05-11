@@ -91,5 +91,58 @@ namespace BankSystemTests
             var result = JsonConvert.DeserializeObject<BalanceResponse>(await response.Content.ReadAsStringAsync());
             Assert.Equal(5, result.Balance);
         }
+
+
+        [Fact]
+        public void CreateAddsCard()
+        {
+            _unitOfWork.Setup(s => s.GetCreditCardRepository.Insert(It.IsAny<CreditCard>())).Verifiable();
+            _creditCardService = new CreditCardService(_unitOfWork.Object);
+            _creditCardService.Create(card);
+            try
+            {
+                _unitOfWork.Verify(x => x.GetCreditCardRepository.Insert(card));
+                Assert.True(true);
+            }
+            catch (MockException)
+            {
+                Assert.True(false);
+            }
+        }
+
+        [Fact]
+        public void DeleteCorrect()
+        {
+            _unitOfWork.Setup(s => s.GetCreditCardRepository.GetById(It.IsAny<int>())).Returns(card);
+            _unitOfWork.Setup(s => s.GetCreditCardRepository.Delete(It.IsAny<int>())).Verifiable();
+            _creditCardService = new CreditCardService(_unitOfWork.Object);
+            _creditCardService.Delete(1);
+            try
+            {
+                _unitOfWork.Verify(x => x.GetCreditCardRepository.Delete(1));
+                Assert.True(true);
+            }
+            catch (MockException)
+            {
+                Assert.True(false);
+            }
+        }
+
+        [Fact]
+        public void UpdateUpdatesCard()
+        {
+            _unitOfWork.Setup(s => s.GetCreditCardRepository.Update(It.IsAny<CreditCard>())).Verifiable();
+            _creditCardService = new CreditCardService(_unitOfWork.Object);
+            _creditCardService.Update(card);
+            try
+            {
+                _unitOfWork.Verify(x => x.GetCreditCardRepository.Update(card));
+                Assert.True(true);
+            }
+            catch (MockException)
+            {
+                Assert.True(false);
+            }
+        }
     }
 }
