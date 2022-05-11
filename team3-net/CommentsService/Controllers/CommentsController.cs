@@ -13,6 +13,15 @@ namespace CommentsService.Controllers
     {
         private readonly IRepository<Comment> itemsRepository;
 
+        //Seed data for users
+        List<User> users = new List<User>()
+        {
+           new User() { Id = Guid.NewGuid() },
+           new User() { Id = Guid.NewGuid() },
+           new User() { Id = Guid.NewGuid() }
+        };
+
+
         public CommentsController(IRepository<Comment> itemsRepository)
         {
             this.itemsRepository = itemsRepository;
@@ -31,26 +40,35 @@ namespace CommentsService.Controllers
         //GET /items/{id}
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<CommentDto>> GetByIdAsync(Guid id)
+        public async Task<ActionResult<CommentDto>> GetByIdAsync(Guid id, Guid userId)
         {
+           // Доробити
 
-            var comment = await itemsRepository.GetItemByIdAsync(id);
-            if (comment == null)
+            foreach (var user in users)
+            {
+                if (user.Id == userId)
+                {
+                    var comment = await itemsRepository.GetItemByIdAsync(id);
+                    return comment.AsDto();
+                }
+            }
+            if (id == null || userId == null)
             {
                 return NotFound();
             }
-            return comment.AsDto();
+            return BadRequest();
         }
         //POST /items/
         [HttpPost]
         public async Task<ActionResult<CommentDto>> PostAsync(CreateCommentDto createItemDto)
         {
-            var item = new Comment
-            {
-                Name = createItemDto.name,
-                Description = createItemDto.description,
-                CreatedDate = DateTime.UtcNow    
-            };
+           
+                var item = new Comment
+                {
+                    Name = createItemDto.name,
+                    Description = createItemDto.description,
+                    CreatedDate = DateTime.UtcNow
+                };
 
             await itemsRepository.CreateAsync(item);
             return CreatedAtAction(nameof(GetByIdAsync), new { id = item.Id }, item);
