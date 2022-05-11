@@ -1,4 +1,5 @@
-﻿using GamesService.Entities;
+﻿using GamesService.Clients;
+using GamesService.Entities;
 using GamesService.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace GamesService.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IRepository<Game> gamesRepository;
+        private readonly CommentsClient commentsClient;
 
-        public GamesController(IRepository<Game> gamesRepository)
+        public GamesController(IRepository<Game> gamesRepository, CommentsClient commentsClient)
         {
             this.gamesRepository = gamesRepository;
+            this.commentsClient = commentsClient;
         }
 
         //GET /items
@@ -49,7 +52,8 @@ namespace GamesService.Controllers
             {
                 Name = createItemDto.name,
                 Description = createItemDto.description,
-                Genre = createItemDto.Genre
+                Genre = createItemDto.Genre,
+                CommentId = createItemDto.commentId
             };
 
             await gamesRepository.CreateAsync(item);

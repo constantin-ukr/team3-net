@@ -7,7 +7,7 @@ namespace GamesService
     {
         public static GameDto AsDto (this Game game)
         {
-            return new GameDto(game.Id, game.Name, game.Description, game.Genre);
+            return new GameDto(game.Id, game.Name, game.Description, game.Genre, game.CommentId, game.UserId);
         }
     }
 }

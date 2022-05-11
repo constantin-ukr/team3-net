@@ -7,17 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["CommentsService/CommentsService.csproj", "CommentsService/"]
-RUN dotnet restore "CommentsService/CommentsService.csproj"
-
+COPY ["GamesService/GamesService.csproj", "GamesService/"]
+RUN dotnet restore "GamesService/GamesService.csproj"
 COPY . .
-WORKDIR "/src/CommentsService"
-RUN dotnet build "CommentsService.csproj" -c Release -o /app/build
+WORKDIR "/src/GamesService"
+RUN dotnet build "GamesService.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "CommentsService.csproj" -c Release -o /app/publish
+RUN dotnet publish "GamesService.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "CommentsService.dll"]
+ENTRYPOINT ["dotnet", "GamesService.dll"]

@@ -18,6 +18,19 @@ services:
         - db-server
     networks:
         - localdev
+  gamesservice:
+    image: ${DOCKER_REGISTRY-}gamesservice
+    container_name: gamesservice-container
+    ports:
+        - 6666:6666
+    build:
+      context: .
+      dockerfile: GamesService/Dockerfile
+   
+    depends_on: 
+        - db-server
+    networks:
+        - localdev
 
   db-server:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -28,7 +41,10 @@ services:
       - MSSQL_TCP_PORT=1433
     ports:
       - 1433:1433
+    volumes:
+      - localhost:/data/db
     networks:
       - localdev
-
+volumes:
+  localhost:
       
