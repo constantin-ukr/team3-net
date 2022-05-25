@@ -7,7 +7,7 @@ namespace CommentsService
     {
         public static CommentDto AsDto (this Comment comment)
         {
-            return new CommentDto(comment.Id, comment.Name, comment.Description, comment.CreatedDate);
+            return new CommentDto(comment.Id, comment.Name, comment.Description, comment.CreatedDate, comment.UserId,comment.ItemId);
         }
     }
 }

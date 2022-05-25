@@ -11,7 +11,8 @@ namespace CommentsService.Controllers
     [Route("comments")]
     public class CommentsController : ControllerBase
     {
-        private readonly IRepository<Comment> itemsRepository;
+        private readonly IRepository<Comment> commentsRepository;
+        private readonly IRepository<User> usersRepository;
 
         //Seed data for users
         List<User> users = new List<User>()
@@ -22,16 +23,17 @@ namespace CommentsService.Controllers
         };
 
 
-        public CommentsController(IRepository<Comment> itemsRepository)
+        public CommentsController(IRepository<Comment> commentsRepository, IRepository<User> usersRepository)
         {
-            this.itemsRepository = itemsRepository;
+            this.commentsRepository = commentsRepository;
+            this.usersRepository = usersRepository;
         }
 
         //GET /items
         [HttpGet]
         public async Task<IEnumerable<CommentDto>> GetAsync()
         {
-            var comments = (await itemsRepository.GetAllItemsAsync())
+            var comments = (await commentsRepository.GetAllItemsAsync())
                 .Select(c => c.AsDto());
             return comments;
         }
@@ -40,37 +42,42 @@ namespace CommentsService.Controllers
         //GET /items/{id}
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<CommentDto>> GetByIdAsync(Guid id, Guid userId)
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllCommentsByUserIdAsync(Guid userId)
         {
-           // Доробити
+         
+            if (userId == Guid.Empty)
+            {
+                return BadRequest();
+            }
 
+            var users = await usersRepository.GetAllItemsAsync();
+           
             foreach (var user in users)
             {
                 if (user.Id == userId)
                 {
-                    var comment = await itemsRepository.GetItemByIdAsync(id);
-                    return comment.AsDto();
+                    var comments = (await commentsRepository.GetAllItemsAsync()).Where(x => x.UserId == userId);
+                    return comments;
                 }
+                
             }
-            if (id == null || userId == null)
-            {
-                return NotFound();
-            }
-            return BadRequest();
+          
+
+           return BadRequest();
         }
         //POST /items/
         [HttpPost]
         public async Task<ActionResult<CommentDto>> PostAsync(CreateCommentDto createItemDto)
         {
-           
-                var item = new Comment
-                {
-                    Name = createItemDto.name,
-                    Description = createItemDto.description,
-                    CreatedDate = DateTime.UtcNow
-                };
 
-            await itemsRepository.CreateAsync(item);
+            var item = new Comment
+            {
+                Name = createItemDto.name,
+                Description = createItemDto.description,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            await commentsRepository.CreateAsync(item);
             return CreatedAtAction(nameof(GetByIdAsync), new { id = item.Id }, item);
         }
 
@@ -78,7 +85,7 @@ namespace CommentsService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(Guid id, UpdateCommentDto updateItemDto)
         {
-            var existingItem = await itemsRepository.GetItemByIdAsync(id);
+            var existingItem = await commentsRepository.GetItemByIdAsync(id);
 
             if (existingItem == null)
             {
@@ -88,7 +95,7 @@ namespace CommentsService.Controllers
             existingItem.Name = updateItemDto.name;
             existingItem.Description = updateItemDto.description;
 
-            await itemsRepository.UpdateAsync(existingItem);
+            await commentsRepository.UpdateAsync(existingItem);
 
 
             return NoContent();
@@ -98,13 +105,13 @@ namespace CommentsService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var item = await itemsRepository.GetItemByIdAsync(id);
+            var item = await commentsRepository.GetItemByIdAsync(id);
 
             if (item == null)
             {
                 return NotFound();
             }
-            await itemsRepository.DeleteAsync(item.Id);
+            await commentsRepository.DeleteAsync(item.Id);
             return NoContent();
         }
     }

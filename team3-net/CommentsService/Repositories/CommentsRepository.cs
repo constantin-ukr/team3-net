@@ -1,9 +1,10 @@
 ﻿using CommentsService.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CommentsService.Repositories
 {
-    public class Repository<T> : IRepository<T> where T:BaseEntity 
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly CommentsDbContext _context;
         private DbSet<T> _enteties;
@@ -31,7 +32,6 @@ namespace CommentsService.Repositories
         {
             return await _enteties.ToListAsync();
         }
-
         public async Task<T> GetItemByIdAsync(Guid id)
         {
             return await _enteties.SingleOrDefaultAsync(s => s.Id == id);
