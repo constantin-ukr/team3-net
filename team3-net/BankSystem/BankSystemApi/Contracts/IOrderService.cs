@@ -1,5 +1,4 @@
 ﻿using BankSystemApi.Models;
-using System.Collections.Generic;
 
 namespace BankSystemApi.Contracts
 {
@@ -7,7 +6,5 @@ namespace BankSystemApi.Contracts
     {
         Order GetById(int id);
         void Create(Order order);
-        void Delete(int id);
-        List<Order> GetAllForUser(int userId);
     }
 }

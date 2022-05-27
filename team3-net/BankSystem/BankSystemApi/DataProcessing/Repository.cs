@@ -2,10 +2,8 @@
 using BankSystemApi.Database;
 using BankSystemApi.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace BankSystemApi.DataProcessing
 {
@@ -22,8 +20,8 @@ namespace BankSystemApi.DataProcessing
         public void Delete(int id)
         {
             var entity = _enteties.FirstOrDefault(x => x.Id == id);
-
             _enteties.Remove(entity);
+            _context.SaveChanges();
         }
 
         public IEnumerable<T> GetAll()
@@ -33,21 +31,19 @@ namespace BankSystemApi.DataProcessing
 
         public T GetById(int id)
         {
-            T entity = _enteties.SingleOrDefault(s => s.Id == id);
-
-            return entity;
+            return _enteties.SingleOrDefault(s => s.Id == id);
         }
 
         public void Insert(T entity)
         {
             _enteties.Add(entity);
+            _context.SaveChanges();
         }
 
         public void Update(T entity)
         {
             _context.Update(entity);
+            _context.SaveChanges();
         }
-
-
     }
 }
