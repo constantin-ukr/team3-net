@@ -22,7 +22,7 @@ namespace BankSystemTests
         }
 
         CreditCard card = new CreditCard()
-        { Id = 1, Balance = 50,  CardNumber = "1111 1111 1111 1111", Cvc = 101,DateOfExpire = new DateTime(2020, 12, 12) };
+        { Id = 1, Balance = 50, CardNumber = "1111 1111 1111 1111", Cvc = 101, DateOfExpire = new DateTime(2020, 12, 12) };
 
 
         List<CreditCard> cards = new List<CreditCard>() {
@@ -38,14 +38,8 @@ namespace BankSystemTests
         {
             _creditCardRepository.Setup(s => s.GetById(It.IsAny<int>())).Returns((CreditCard)null);
             _creditCardService = new CreditCardService(_creditCardRepository.Object);
-            try
-            {
-                var result = _creditCardService.GetById(1);
-            }
-            catch (Exception ex)
-            {
-                Assert.Equal(typeof(ArgumentNullException), ex.GetType());
-            }
+            Assert.Throws<ArgumentNullException>(() => { _creditCardService.GetById(1); });
+
         }
 
         [Fact]
@@ -77,9 +71,9 @@ namespace BankSystemTests
         });
 
             var client = application.CreateClient();
-            var response = await client.GetAsync(client.BaseAddress + "balance/1111 1111 1111 1111");
+            var response = await client.GetAsync(client.BaseAddress + "balance/1111 1112 1113 1114");
             var result = JsonConvert.DeserializeObject<BalanceResponse>(await response.Content.ReadAsStringAsync());
-            Assert.Equal(5, result.Balance);
+            Assert.Equal(10, result.Balance);
         }
     }
 }

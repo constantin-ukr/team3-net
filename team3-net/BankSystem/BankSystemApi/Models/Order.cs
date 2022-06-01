@@ -2,7 +2,7 @@
 
 namespace BankSystemApi.Models
 {
-    public class Order:BaseClass
+    public class Order : BaseClass
     {
         public string UserId { get; set; }
         public int CardId { get; set; }
@@ -15,8 +15,7 @@ namespace BankSystemApi.Models
         {
             set
             {
-                date = DateTime.Now.Date ;
-               
+                date = DateTime.Now.Date;
             }
             get => date;
         }

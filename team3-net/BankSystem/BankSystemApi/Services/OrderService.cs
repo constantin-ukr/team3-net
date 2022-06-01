@@ -16,7 +16,7 @@ namespace BankSystemApi.Services
             _ordersRepository = orderRepository;
         }
 
-        public void Create(Order order)
+        public void MakeOrder(Order order)
         {
             var creditcard = _creditCardRepository.GetAll().FirstOrDefault(x => (x.Cvc == order.CreditCard.Cvc &&
             x.CardNumber == order.CreditCard.CardNumber && x.DateOfExpire == order.CreditCard.DateOfExpire));
