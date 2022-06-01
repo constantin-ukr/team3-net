@@ -24,9 +24,9 @@ namespace BankSystemApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Order order)
+        public IActionResult MakeOrder([FromBody] Order order)
         {
-            _orderService.Create(order);
+            _orderService.MakeOrder(order);
             return Ok(new { StatusCode = 201, message = "Purchase was successful" });
         }
     }

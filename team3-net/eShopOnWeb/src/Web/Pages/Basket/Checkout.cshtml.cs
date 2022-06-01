@@ -37,33 +37,22 @@ public class CheckoutModel : PageModel
 
     public async Task OnGet()
     {
+        
         await SetBasketModelAsync();
     }
 
     public async Task<IActionResult> OnPost(IEnumerable<BasketItemViewModel> items)
     {
-        try
+
+        await SetBasketModelAsync();
+        if (!ModelState.IsValid)
         {
-            await SetBasketModelAsync();
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
-            await _basketService.SetQuantities(BasketModel.Id, updateModel);
-            await _orderService.CreateOrderAsync(BasketModel.Id, new Address("123 Main St.", "Kent", "OH", "United States", "44240"));
-            await _basketService.DeleteBasketAsync(BasketModel.Id);
+            return BadRequest();
         }
-        catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
-        {
-            //Redirect to Empty Basket page
-            _logger.LogWarning(emptyBasketOnCheckoutException.Message);
-            return RedirectToPage("/Basket/Index");
-        }
-
-        return RedirectToPage("Success");
+        var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
+        await _basketService.SetQuantities(BasketModel.Id, updateModel);
+        return RedirectToPage("Payment");
+       
     }
 
     private async Task SetBasketModelAsync()
