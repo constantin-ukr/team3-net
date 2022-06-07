@@ -23,7 +23,6 @@ namespace BankSystemTests
         static CreditCard card = new CreditCard()
         { Id = 1, Balance = 50, CardNumber = "1111 1111 1111 1111", Cvc = 101, DateOfExpire = new DateTime(2020, 12, 12) };
 
-
         static List<CreditCard> cards = new List<CreditCard>() {
              new CreditCard()
             { Id = 1, Balance = 50, CardNumber = "1111 1111 1111 1111", Cvc = 101,
