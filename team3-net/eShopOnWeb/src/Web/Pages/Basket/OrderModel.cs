@@ -7,14 +7,11 @@ public class OrderModel
     public decimal Price { get; set; }
     public CreditCardModel CreditCard { get; set; }
     private DateTime date;
-
-
     public DateTime Date
     {
         set
         {
             date = DateTime.Now.Date;
-
         }
         get => date;
     }

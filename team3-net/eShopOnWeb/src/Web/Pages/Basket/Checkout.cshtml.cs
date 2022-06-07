@@ -37,13 +37,11 @@ public class CheckoutModel : PageModel
 
     public async Task OnGet()
     {
-        
         await SetBasketModelAsync();
     }
 
     public async Task<IActionResult> OnPost(IEnumerable<BasketItemViewModel> items)
     {
-
         await SetBasketModelAsync();
         if (!ModelState.IsValid)
         {
@@ -52,7 +50,6 @@ public class CheckoutModel : PageModel
         var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
         await _basketService.SetQuantities(BasketModel.Id, updateModel);
         return RedirectToPage("Payment");
-       
     }
 
     private async Task SetBasketModelAsync()

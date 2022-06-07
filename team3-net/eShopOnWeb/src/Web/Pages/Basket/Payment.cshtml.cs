@@ -14,10 +14,11 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
 {
     public class PaymentModel : PageModel
     {
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IBasketService _basketService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IOrderService _orderService;
-        private string _username = null;
+        private string _username;
         public string Error { get; set; }
         private readonly IBasketViewModelService _basketViewModelService;
         private readonly IAppLogger<PaymentModel> _logger;
@@ -26,16 +27,19 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
             IBasketViewModelService basketViewModelService,
             SignInManager<ApplicationUser> signInManager,
             IOrderService orderService,
-            IAppLogger<PaymentModel> logger)
+            IAppLogger<PaymentModel> logger,
+            IHttpClientFactory httpClientFactory)
         {
             _basketService = basketService;
             _signInManager = signInManager;
             _orderService = orderService;
             _basketViewModelService = basketViewModelService;
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
         }
 
         public BasketViewModel BasketModel { get; set; } = new BasketViewModel();
+
         public void OnGet()
         {
         }
@@ -51,20 +55,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
                     return BadRequest();
                 }
 
-                var order = new OrderModel()
-                {
-                    UserName = _username,
-                    Date = DateTime.Now,
-                    Price = BasketModel.Total(),
-                    CreditCard = new CreditCardModel()
-                    {
-                        CardNumber = cardNumber,
-                        Cvc = cvc,
-                        DateOfExpire = new DateTime(2000+year, month, 1)
-                    }
-                };
-
-                var response = await Pay(JsonConvert.SerializeObject(order), "https://localhost:44366/api/Orders");
+                var response = await Pay(cardNumber, month, year, cvc);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -72,7 +63,7 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
                     await _basketService.DeleteBasketAsync(BasketModel.Id);
                     return RedirectToPage("Success");
                 }
-                else if(response.StatusCode==HttpStatusCode.NotFound)
+                else if (response.StatusCode == HttpStatusCode.NotFound)
                 {
                     Error = "Credit card not found, please check your entry and try again";
                     return RedirectToPage("Payment", new { Error = this.Error });
@@ -82,7 +73,6 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
                     Error = "Something went wrong, check your credit card balance and try again";
                     return RedirectToPage("Payment", new { Error = this.Error });
                 }
-                
             }
             catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
             {
@@ -90,8 +80,6 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
                 _logger.LogWarning(emptyBasketOnCheckoutException.Message);
                 return RedirectToPage("/Basket/Index");
             }
-
-            
         }
 
         private async Task SetBasketModelAsync()
@@ -122,13 +110,27 @@ namespace Microsoft.eShopWeb.Web.Pages.Basket
             Response.Cookies.Append(Constants.BASKET_COOKIENAME, _username, cookieOptions);
         }
 
-        private async Task<HttpResponseMessage> Pay(string data, string url)
+        private async Task<HttpResponseMessage> Pay(string cardNumber, int month, int year, int cvc)
         {
-            var client = new HttpClient();
+
+            var order = new OrderModel()
+            {
+                UserName = _username,
+                Date = DateTime.Now,
+                Price = BasketModel.Total(),
+                CreditCard = new CreditCardModel()
+                {
+                    CardNumber = cardNumber,
+                    Cvc = cvc,
+                    DateOfExpire = new DateTime(2000 + year, month, 1)
+                }
+            };
+
+            var data = JsonConvert.SerializeObject(order);
+            var url = "http://localhost:8000/api/Orders";
+            var client = _httpClientFactory.CreateClient();
             var content = new StringContent(data, Encoding.UTF8, "application/json");
             return await client.PostAsync(url, content);
-
         }
-
     }
 }

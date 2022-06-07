@@ -1,16 +1,9 @@
-﻿using BankSystemApi;
-using BankSystemApi.Contracts;
+﻿using BankSystemApi.Contracts;
 using BankSystemApi.Models;
 using BankSystemApi.Services;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
 using Xunit;
 
 namespace BankSystemTests
@@ -20,6 +13,7 @@ namespace BankSystemTests
         private Mock<IRepository<Order>> _orderRepository;
         private Mock<IRepository<CreditCard>> _creditCardRepository;
         private OrderService _orderService;
+
         public OrderServiceTests()
         {
             _orderRepository = new Mock<IRepository<Order>>();
@@ -60,6 +54,7 @@ namespace BankSystemTests
             _orderService = new OrderService(_creditCardRepository.Object, _orderRepository.Object);
             Assert.Throws<ArgumentNullException>(() => { _orderService.MakeOrder(IncorectDataOrder); });
         }
+
         [Fact]
         public void MakeOrderAddsSuccesOrder()
         {
@@ -70,7 +65,6 @@ namespace BankSystemTests
             _orderRepository.Verify(x => x.Insert(CorrectOrder));
         }
 
-
         [Fact]
         public void MakeOrderAddsFailedOrder()
         {
@@ -79,21 +73,6 @@ namespace BankSystemTests
             _orderService = new OrderService(_creditCardRepository.Object, _orderRepository.Object);
             Assert.Throws<ArgumentException>(() => { _orderService.MakeOrder(FailedOrder); });
             _orderRepository.Verify(x => x.Insert(FailedOrder));
-        }
-
-        [Fact]
-        public async void CreateReturnsNotFoundIntegration()
-        {
-            var application = new WebApplicationFactory<Program>()
-        .WithWebHostBuilder(builder =>
-        {
-        });
-
-            var client = application.CreateClient();
-            var content = new StringContent(JsonConvert.SerializeObject(IncorectDataOrder), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(client.BaseAddress + "orders", content);
-            Assert.False(response.IsSuccessStatusCode);
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
@@ -114,12 +93,6 @@ namespace BankSystemTests
             Assert.NotNull(actual);
             Assert.Equal(order, actual);
         }
-
-
-
-
-
-
     }
 }
 
