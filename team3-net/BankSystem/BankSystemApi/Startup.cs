@@ -23,7 +23,7 @@ namespace BankSystemApi
         {
             Configuration = configuration;
         }
-        
+
         public IConfiguration Configuration { get; set; }
 
         public void ConfigureServices(IServiceCollection services)

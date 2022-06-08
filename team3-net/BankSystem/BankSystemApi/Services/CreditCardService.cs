@@ -30,8 +30,7 @@ namespace BankSystemApi.Services
                 _cache.SetString(cardNumber, card.Balance.ToString());
                 return card.Balance;
             }
-            return Convert.ToDecimal(balance);
-            
+            return Convert.ToDecimal(balance); 
         }
 
         public CreditCard GetById(int id)

@@ -19,9 +19,7 @@ namespace BankSystemIntegrationTests
         public async void MakeOrderReturnsNotFoundIntegration()
         {
             var application = new WebApplicationFactory<Program>()
-        .WithWebHostBuilder(builder =>
-        {
-        });
+        .WithWebHostBuilder(builder =>{});
 
             var client = application.CreateClient();
             var content = new StringContent(JsonConvert.SerializeObject(IncorectDataOrder), Encoding.UTF8, "application/json");

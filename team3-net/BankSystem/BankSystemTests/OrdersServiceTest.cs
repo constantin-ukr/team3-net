@@ -49,27 +49,38 @@ namespace BankSystemTests
         [Fact]
         public void MakeOrderThrowsArgumentNullException()
         {
+            //Arrange
             _creditCardRepository.Setup(s => s.GetAll()).Returns(cards);
             _orderService = new OrderService(_creditCardRepository.Object, _orderRepository.Object);
+
+            //Assert
             Assert.Throws<ArgumentNullException>(() => { _orderService.MakeOrder(IncorectDataOrder); });
         }
 
         [Fact]
         public void MakeOrderAddsSuccesOrder()
         {
+            //Arrange
             _creditCardRepository.Setup(s => s.GetAll()).Returns(cards);
             _orderRepository.Setup(s => s.Insert(It.IsAny<Order>())).Verifiable();
             _orderService = new OrderService(_creditCardRepository.Object, _orderRepository.Object);
+
+            //Act
             _orderService.MakeOrder(CorrectOrder);
+
+            //Assert
             _orderRepository.Verify(x => x.Insert(CorrectOrder));
         }
 
         [Fact]
         public void MakeOrderAddsFailedOrder()
         {
+            //Arrange
             _creditCardRepository.Setup(s => s.GetAll()).Returns(cards);
             _orderRepository.Setup(s => s.Insert(It.IsAny<Order>())).Verifiable();
             _orderService = new OrderService(_creditCardRepository.Object, _orderRepository.Object);
+
+            //Assert
             Assert.Throws<ArgumentException>(() => { _orderService.MakeOrder(FailedOrder); });
             _orderRepository.Verify(x => x.Insert(FailedOrder));
         }
@@ -77,18 +88,26 @@ namespace BankSystemTests
         [Fact]
         public void GetByIdThrowsArgumentNullException()
         {
+            //Arrange
             _orderRepository.Setup(s => s.GetById(It.IsAny<int>())).Returns((Order)null);
             _orderService = new OrderService(_creditCardRepository.Object, _orderRepository.Object);
+
+            //Assert
             Assert.Throws<ArgumentNullException>(() => { _orderService.GetById(1); });
         }
 
         [Fact]
         public void GetByIdReturnsOrder()
         {
+            //Arrange
             _orderRepository.Setup(s => s.GetById(It.IsAny<int>())).Returns(order);
             _creditCardRepository.Setup(s => s.GetById(It.IsAny<int>())).Returns(card);
             _orderService = new OrderService(_creditCardRepository.Object, _orderRepository.Object);
+
+            //Act
             var actual = _orderService.GetById(1);
+
+            //Assert
             Assert.NotNull(actual);
             Assert.Equal(order, actual);
         }

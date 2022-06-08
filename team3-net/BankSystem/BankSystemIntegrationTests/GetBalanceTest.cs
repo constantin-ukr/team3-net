@@ -12,9 +12,7 @@ namespace BankSystemIntegrationTests
         public async void GetBalanceReturnsIntIntegration()
         {
             var application = new WebApplicationFactory<Program>()
-        .WithWebHostBuilder(builder =>
-        {
-        });
+        .WithWebHostBuilder(builder =>{});
 
             var client = application.CreateClient();
             var response = await client.GetAsync(client.BaseAddress + "balance/1111 1112 1113 1114");

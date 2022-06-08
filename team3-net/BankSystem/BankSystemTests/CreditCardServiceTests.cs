@@ -34,17 +34,25 @@ namespace BankSystemTests
         [Fact]
         public void GetByIdThrowsArgumentNullException()
         {
+            //Arrange
             _creditCardRepository.Setup(s => s.GetById(It.IsAny<int>())).Returns((CreditCard)null);
             _creditCardService = new CreditCardService(_creditCardRepository.Object, _cache.Object);
+
+            //Assert
             Assert.Throws<ArgumentNullException>(() => { _creditCardService.GetById(1); });
         }
 
         [Fact]
         public void GetByIdReturnsCard()
         {
+            //Arrange
             _creditCardRepository.Setup(s => s.GetById(It.IsAny<int>())).Returns(card);
             _creditCardService = new CreditCardService(_creditCardRepository.Object, _cache.Object);
+
+            //Act
             var actual = _creditCardService.GetById(1);
+
+            //Assert
             Assert.NotNull(actual);
             Assert.Equal(card, actual);
         }
@@ -52,10 +60,14 @@ namespace BankSystemTests
         [Fact]
         public void GetBalanceReturnsInt()
         {
+            //Arrange
             _creditCardRepository.Setup(s => s.GetAll()).Returns(cards);
             _creditCardService = new CreditCardService(_creditCardRepository.Object, _cache.Object);
 
+            //Act
             var result = _creditCardService.getBalance("1111 1111 1111 1111");
+
+            //Assert
             Assert.Equal(50, result);
         }
     }
