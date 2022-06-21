@@ -1,0 +1,51 @@
+﻿version: '3.4'
+
+networks:
+   banksystemapi-dev:
+    driver: bridge 
+
+services:
+  banksystemapi:
+    image:  banksystemapi:latest
+    depends_on:
+      - "postgres_image"
+      - "mongodb"
+    links:
+      - "mongodb"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"     
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=BankSystem;username=postgres;password=qwerty123"
+    networks:
+      -  banksystemapi-dev  
+  
+  postgres_image:
+    image: postgres:latest
+    ports:
+      - "5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "qwerty123"
+      POSTGRES_DB: "BankSystem"
+    networks:
+      -  banksystemapi-dev
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: "MongoCache"
+    ports:
+      - 27017:27017
+    networks:
+      -  banksystemapi-dev  
+
+volumes:
+  db_volume:

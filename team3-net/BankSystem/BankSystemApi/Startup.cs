@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MongoDbCache;
 using System;
 
 namespace BankSystemApi
@@ -27,12 +28,19 @@ namespace BankSystemApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BankSystemContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddDbContext<BankSystemContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DockerConnection")));
             services.AddControllers();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICreditCardService, CreditCardService>();
+            services.AddMongoDbCache(options =>
+            {
+                options.ConnectionString = "mongodb://mongodb:27017";
+                options.DatabaseName = "MongoCache";
+                options.CollectionName = "BankTestCache";
+                options.ExpiredScanInterval = TimeSpan.FromMinutes(5);
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -42,7 +50,7 @@ namespace BankSystemApi
                     Description = "API for CreditCards"
                 });
             });
-        
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +61,6 @@ namespace BankSystemApi
                 app.UseDeveloperExceptionPage();
             }
             dataContext.Database.Migrate();
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

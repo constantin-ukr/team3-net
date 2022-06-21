@@ -5,6 +5,6 @@ namespace BankSystemApi.Contracts
     public interface IOrderService
     {
         Order GetById(int id);
-        void Create(Order order);
+        void MakeOrder(Order order);
     }
 }

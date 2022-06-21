@@ -21,18 +21,5 @@ namespace BankSystemApi.Filters
             }
             context.ExceptionHandled = true;
         }
-        public override async Task OnExceptionAsync(ExceptionContext context)
-        {
-            if (context.Exception.GetType() == typeof(ArgumentNullException))
-            {
-
-                context.Result = new NotFoundResult();
-            }
-            else
-            {
-                context.Result = new BadRequestResult();
-            }
-            context.ExceptionHandled = true;
-        }
     }
 }
